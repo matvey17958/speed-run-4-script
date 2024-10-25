@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
 
 local screenGui = Instance.new("ScreenGui")
 local frame = Instance.new("Frame")
@@ -74,13 +75,20 @@ autoFarmButton.MouseButton1Click:Connect(function()
     end
 end)
 
-autoFarmEnergyButton.MouseButton1Click:Connect(function()
-    autoFarmEnergyEnabled = not autoFarmEnergyEnabled
-    autoFarmEnergyButton.Text = "Auto Farm Energy: " .. (autoFarmEnergyEnabled and "On" or "Off")
-    if autoFarmEnergyEnabled then
-        autoFarmEnergy()
+local function autoFarmEnergy()
+    local targetPosition = Vector3.new(112.894, 133.527, -482.233)
+    player.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+
+    while autoFarmEnergyEnabled do
+        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.A, false, game) -- Нажать A
+        wait(4)
+        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.A, false, game) -- Отпустить A
+        
+        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.D, false, game) -- Нажать D
+        wait(4)
+        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.D, false, game) -- Отпустить D
     end
-end)
+end
 
 closeButton.MouseButton1Click:Connect(function()
     screenGui:Destroy()
