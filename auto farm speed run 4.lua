@@ -3,8 +3,10 @@ local player = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 
+-- Создание GUI
 local screenGui = Instance.new("ScreenGui")
 local frame = Instance.new("Frame")
+local titleLabel = Instance.new("TextLabel")
 local autoFarmButton = Instance.new("TextButton")
 local autoFarmEnergyButton = Instance.new("TextButton")
 local closeButton = Instance.new("TextButton")
@@ -42,38 +44,160 @@ closeButton.Parent = frame
 local autoFarmEnabled = false
 local autoFarmEnergyEnabled = false
 
+-- Функция для телепортации игрока к модели Gate со смещением назад на -7 по оси Z
 local function teleportPlayerToCorrectGate()
-    -- (Сюда вставляется существующая функция для авто-фарма)
+    local levelsFolder = game.Workspace:FindFirstChild("Levels")
+    if not levelsFolder then
+        warn("Папка Levels не найдена в Workspace")
+        return
+    end
+
+    -- Проверка моделей с цифрами от 1 до 50
+    for i = 1, 50 do
+        local model = levelsFolder:FindFirstChild(tostring(i))
+        if model then
+            local map = model:FindFirstChild("Map")
+            if map then
+                local geometry = map:FindFirstChild("Geometry")
+                if geometry then
+                    -- Поиск Gate в Keep
+                    local keep = geometry:FindFirstChild("Keep")
+                    if keep then
+                        local gate = keep:FindFirstChild("Gate")
+                        if gate and gate:IsA("Model") then
+                            local targetPart = gate:FindFirstChild("Smooth Block Model")
+                            if targetPart and targetPart:IsA("BasePart") then
+                                player.Character:SetPrimaryPartCFrame(targetPart.CFrame * CFrame.new(0, 0, -7))
+                                print("Игрок телепортирован к Gate в папке Keep.")
+                                return
+                            else
+                                warn("Не найден Smooth Block Model в Gate.")
+                            end
+                        end
+                    end
+
+                    -- Поиск Gate в Geometry
+                    local gate = geometry:FindFirstChild("Gate")
+                    if gate and gate:IsA("Model") then
+                        local targetPart = gate:FindFirstChild("Smooth Block Model")
+                        if targetPart and targetPart:IsA("BasePart") then
+                            player.Character:SetPrimaryPartCFrame(targetPart.CFrame * CFrame.new(0, 0, -7))
+                            print("Игрок телепортирован к Gate в папке Geometry.")
+                            return
+                        else
+                            warn("Не найден Smooth Block Model в Gate.")
+                        end
+                    end
+
+                    -- Поиск border в Geometry
+                    local border = geometry:FindFirstChild("border")
+                    if border and border:IsA("Model") then
+                        local targetPart = border:FindFirstChild("Smooth Block Model")
+                        if targetPart and targetPart:IsA("BasePart") then
+                            player.Character:SetPrimaryPartCFrame(targetPart.CFrame * CFrame.new(0, 0, -7))
+                            print("Игрок телепортирован к Border в папке Geometry.")
+                            return
+                        else
+                            warn("Не найден Smooth Block Model в Border.")
+                        end
+                    end
+
+                    -- Поиск Gate в Level
+                    local level = geometry:FindFirstChild("Level")
+                    if level then
+                        local gate = level:FindFirstChild("Gate")
+                        if gate and gate:IsA("Model") then
+                            local targetPart = gate:FindFirstChild("Smooth Block Model")
+                            if targetPart and targetPart:IsA("BasePart") then
+                                player.Character:SetPrimaryPartCFrame(targetPart.CFrame * CFrame.new(0, 0, -7))
+                                print("Игрок телепортирован к Gate в папке Level.")
+                                return
+                            else
+                                warn("Не найден Smooth Block Model в Gate.")
+                            end
+                        end
+                    end
+                    
+                    -- Поиск Gate в Level 5
+                    local level5 = geometry:FindFirstChild("Level 5")
+                    if level5 then
+                        local keep = level5:FindFirstChild("Keep")
+                        if keep then
+                            local gate = keep:FindFirstChild("Gate")
+                            if gate and gate:IsA("Model") then
+                                local targetPart = gate:FindFirstChild("Smooth Block Model")
+                                if targetPart and targetPart:IsA("BasePart") then
+                                    player.Character:SetPrimaryPartCFrame(targetPart.CFrame * CFrame.new(0, 0, -7))
+                                    print("Игрок телепортирован к Gate в папке Level 5.")
+                                    return
+                                else
+                                    warn("Не найден Smooth Block Model в Gate в Level 5.")
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- Поиск Gate в RainbowRun
+    local rainbowRun = levelsFolder:FindFirstChild("RainbowRun")
+    if rainbowRun then
+        local map = rainbowRun:FindFirstChild("Map")
+        if map then
+            local geometry = map:FindFirstChild("Geometry")
+            if geometry then
+                local gate = geometry:FindFirstChild("Gate")
+                if gate and gate:IsA("Model") then
+                    local targetPart = gate:FindFirstChild("Smooth Block Model")
+                    if targetPart and targetPart:IsA("BasePart") then
+                        player.Character:SetPrimaryPartCFrame(targetPart.CFrame * CFrame.new(0, 0, -7))
+                        print("Игрок телепортирован к Gate в RainbowRun.")
+                        return
+                    else
+                        warn("Не найден Smooth Block Model в Gate в RainbowRun.")
+                    end
+                end
+            end
+        end
+    end
+
+    -- Поиск Gate в final destiny props
+    local finalDestinyProps = levelsFolder:FindFirstChild("final destiny props")
+    if finalDestinyProps then
+        local map = finalDestinyProps:FindFirstChild("Map")
+        if map then
+            local geometry = map:FindFirstChild("Geometry")
+            if geometry then
+                local doNotEnterWinnersSecret = geometry:FindFirstChild("do not enter winners secret")
+                if doNotEnterWinnersSecret then
+                    local gate = doNotEnterWinnersSecret:FindFirstChild("Gate")
+                    if gate and gate:IsA("Model") then
+                        local targetPart = gate:FindFirstChild("Smooth Block Model")
+                        if targetPart and targetPart:IsA("BasePart") then
+                            player.Character:SetPrimaryPartCFrame(targetPart.CFrame * CFrame.new(0, 0, -7))
+                            print("Игрок телепортирован к Gate в do not enter winners secret.")
+                            return
+                        else
+                            warn("Не найден Smooth Block Model в Gate в do not enter winners secret.")
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    warn("Модель Gate или Border с Part 'Smooth Block Model' не найдена в диапазоне уровней 1-50, RainbowRun и final destiny props.")
 end
 
+-- Основной цикл для авто-фарма
 local function autoFarm()
     while autoFarmEnabled do
         teleportPlayerToCorrectGate()
-        wait(2)
+        wait(2) -- Подождите 2 секунды перед следующей попыткой телепортации
     end
 end
-
-local function autoFarmEnergy()
-    local targetPosition = Vector3.new(112.894, 133.527, -482.233)
-    player.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
-
-    while autoFarmEnergyEnabled do
-        keypress(Enum.KeyCode.A)
-        wait(4)
-        keyrelease(Enum.KeyCode.A)
-        keypress(Enum.KeyCode.D)
-        wait(4)
-        keyrelease(Enum.KeyCode.D)
-    end
-end
-
-autoFarmButton.MouseButton1Click:Connect(function()
-    autoFarmEnabled = not autoFarmEnabled
-    autoFarmButton.Text = "Auto Farm: " .. (autoFarmEnabled and "On" or "Off")
-    if autoFarmEnabled then
-        autoFarm()
-    end
-end)
 
 local function autoFarmEnergy()
     local targetPosition = Vector3.new(112.894, 133.527, -482.233)
@@ -90,11 +214,30 @@ local function autoFarmEnergy()
     end
 end
 
-closeButton.MouseButton1Click:Connect(function()
-    screenGui:Destroy()
+-- Обработчик нажатия кнопки авто-фарма
+autoFarmButton.MouseButton1Click:Connect(function()
+    autoFarmEnabled = not autoFarmEnabled
+    autoFarmButton.Text = "Auto Farm: " .. (autoFarmEnabled and "On" or "Off")
+    
+    if autoFarmEnabled then
+        autoFarm()
+    end
 end)
 
--- Код для перемещения окна frame
+autoFarmEnergyButton.MouseButton1Click:Connect(function()
+    autoFarmEnergyEnabled = not autoFarmEnergyEnabled
+    autoFarmEnergyButton.Text = "Auto Farm Energy: " .. (autoFarmEnergyEnabled and "On" or "Off")
+    if autoFarmEnergyEnabled then
+        autoFarmEnergy()
+    end
+end)
+
+-- Обработчик нажатия кнопки закрытия
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy() -- Уничтожаем GUI при закрытии
+end)
+
+-- Возможность перемещения GUI
 local dragging
 local dragInput
 local mousePos
@@ -119,5 +262,4 @@ UserInputService.InputChanged:Connect(function(input)
         local delta = UserInputService:GetMouse().Position - mousePos
         frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
     end
-end) перемещает в кординаты но не двигается 
-
+end)
